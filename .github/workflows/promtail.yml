@@ -22,7 +22,7 @@ jobs:
         docker build ./loki-build-image -t loki-build-image/latest
     - name: build promail
       run: |
-        docker run --rm -v .:/src/loki loki-build-image/latest dist
+        docker run --rm -v $(pwd):/src/loki loki-build-image/latest dist
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
       with:
