@@ -1,0 +1,33 @@
+name: Build release
+
+on:
+  workflow_dispatch:
+    #inputs:
+      #name:
+        # Friendly description to be shown in the UI instead of 'name'
+        #description: 'Person to greet'
+        # Default value if no value is explicitly provided
+        #default: 'World'
+        # Input has to be provided for the workflow to run
+        #required: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: build loki-build-image
+      run: |
+        docker build ./loki-build-image -t loki-build-image/latest
+    - name: build release
+      run: |
+        docker run --rm -v $(pwd):/src/loki loki-build-image/latest dist
+    - name: Upload binaries to release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: dist/*
+        tag: ${{ github.ref }}
+        overwrite: true
+        file_glob: true
