@@ -1,10 +1,13 @@
 FROM golang:1.16.6-buster
-RUN apt-get update && \
+RUN dpkg --add-architecture i386 && \
+    apt-get update && \
     apt-get install -qy \
     musl gnupg ragel \
     file zip unzip jq gettext\
     protobuf-compiler libprotobuf-dev \
-    libsystemd-dev && \
+    libsystemd-dev \
+    libsystemd-dev:i386 libprotobuf-dev:i386 \
+    crossbuild-essential-i386 && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install some necessary dependencies.
