@@ -50,12 +50,15 @@ FROM golang:1.17.8 as nfpm
 RUN GO111MODULE=on go get github.com/goreleaser/nfpm/v2/cmd/nfpm@v2.11.3
 
 FROM golang:1.17.8-buster
-RUN apt-get update && \
+RUN dpkg --add-architecture i386 && \
+    apt-get update && \
     apt-get install -qy \
     musl gnupg ragel \
     file zip unzip jq gettext\
     protobuf-compiler libprotobuf-dev \
-    libsystemd-dev && \
+    libsystemd-dev \
+    libsystemd-dev:i386 libprotobuf-dev:i386 \
+    crossbuild-essential-i386 && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 COPY --from=docker /usr/bin/docker /usr/bin/docker
