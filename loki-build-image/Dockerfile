@@ -44,12 +44,15 @@ FROM golang:1.17.2 as ghr
 RUN GO111MODULE=on go get github.com/tcnksm/ghr
 
 FROM golang:1.17.2-buster
-RUN apt-get update && \
+RUN dpkg --add-architecture i386 && \
+    apt-get update && \
     apt-get install -qy \
     musl gnupg ragel \
     file zip unzip jq gettext\
     protobuf-compiler libprotobuf-dev \
-    libsystemd-dev && \
+    libsystemd-dev \
+    libsystemd-dev:i386 libprotobuf-dev:i386 \
+    crossbuild-essential-i386 && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 COPY --from=docker /usr/bin/docker /usr/bin/docker
